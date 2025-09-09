@@ -10,12 +10,11 @@ import { Post as PostModel } from '@prisma/client';
 import { PostStatus } from '@prisma/client/wasm';
 import { PostsService } from './posts.service';
 
-
 @Controller('posts')
 export class PostsController {
 	constructor(private readonly postsService: PostsService) {}
 
-	@Post('post')
+	@Post()
 	async createDraft(
 		@Body() postData: { title: string; content?: string },
 		@Headers('user-id') userId: string,
@@ -37,6 +36,6 @@ export class PostsController {
 
 	@Get()
 	async getAllPosts() {
-		return this.postsService.posts({ where: { status: PostStatus.PUBLISHED } });
+		return this.postsService.posts({});
 	}
 }
