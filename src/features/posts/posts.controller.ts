@@ -6,9 +6,10 @@ import {
 	Post,
 	UnauthorizedException,
 } from '@nestjs/common';
-import type { Post as PostModel } from '@prisma/client';
+import { Post as PostModel } from '@prisma/client';
 import { PostStatus } from '@prisma/client/wasm';
-import type { PostsService } from './posts.service';
+import { PostsService } from './posts.service';
+
 
 @Controller('posts')
 export class PostsController {
