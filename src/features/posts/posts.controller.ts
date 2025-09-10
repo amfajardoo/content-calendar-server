@@ -20,7 +20,7 @@ export class PostsController {
 	@Post()
 	async createDraft(
 		@Body() postData: { title: string; content?: string },
-		@Headers('user-id') userId: string,
+		@Headers('X-User-Id') userId: string,
 	): Promise<PostModel> {
 		if (!userId) {
 			throw new UnauthorizedException('User ID not found in headers');
