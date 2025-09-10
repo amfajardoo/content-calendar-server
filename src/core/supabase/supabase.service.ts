@@ -8,7 +8,9 @@ export class SupabaseService {
 
 	get SupabaseClient(): SupabaseClient {
 		const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-		const serviceRoleKey = this.configService.get<string>('SERVICE_ROLE_KEY');
+		const serviceRoleKey = this.configService.get<string>(
+			'SUPABASE_SERVICE_ROLE_KEY',
+		);
 
 		if (!supabaseUrl || !serviceRoleKey) {
 			throw new Error(
