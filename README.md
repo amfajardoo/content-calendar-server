@@ -10,7 +10,7 @@ $ cp template.env .env
 # Update the .env file with your own settings
 $ npx prisma db push
 $ npx prisma generate
-$ npm run dev
+$ npm run start:dev
 # Open http://localhost:3000
 ```
 
