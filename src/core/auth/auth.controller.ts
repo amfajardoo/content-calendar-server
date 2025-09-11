@@ -1,25 +1,33 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
-import type {
-	AuthResponse,
-	AuthTokenResponse,
-	SignInWithPasswordCredentials,
-} from '@supabase/supabase-js';
-import type { CredentialsWithEmail } from './auth.service';
-import { AuthService } from './auth.service';
+import { Controller, Post, Body, Res, UnauthorizedException } from '@nestjs/common';
+
+import { type Response } from 'express';
+
+import { type SignInWithPasswordCredentials } from '@supabase/supabase-js';
+import { AuthService, type CredentialsWithEmail } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(private readonly authService: AuthService) { }
 
 	@Post()
 	async authenticate(
 		@Body() credentials: SignInWithPasswordCredentials,
-	): Promise<{ accessToken: string; userId: string }> {
+		@Res({ passthrough: true }) res: Response
+	): Promise<{ userId: string }> {
+
 		const authResponse = await this.authService.login(credentials);
 		if (authResponse.error) {
 			throw new UnauthorizedException(authResponse.error.message);
 		}
-		return { accessToken: authResponse.data.session?.access_token, userId: authResponse.data.user?.id };
+		const accessToken = authResponse.data.session?.access_token;
+
+		res.cookie('accessToken', accessToken, {
+			httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
+			secure: process.env.NODE_ENV === 'production', // Recommended for production to only send over HTTPS
+			maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie expiration in milliseconds (e.g., 7 days)
+			sameSite: 'lax', // Or 'strict' or 'none', depending on your needs for CSRF protection
+		});
+		return { userId: authResponse.data.user?.id };
 	}
 
 	@Post('register')
