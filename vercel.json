@@ -16,7 +16,5 @@
       }
     }
   ],
-  "outputDirectory": "dist",
-  "install-command": "npm install --force",
-  "start-command": "node -r tsconfig-paths/register dist/main.js"
+  "outputDirectory": "dist"
 }
