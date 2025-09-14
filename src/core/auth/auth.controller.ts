@@ -1,9 +1,5 @@
 import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
-import type {
-	AuthResponse,
-	AuthTokenResponse,
-	SignInWithPasswordCredentials,
-} from '@supabase/supabase-js';
+import type { SignInWithPasswordCredentials } from '@supabase/supabase-js';
 import type { CredentialsWithEmail } from './auth.service';
 import { AuthService } from './auth.service';
 
@@ -19,7 +15,10 @@ export class AuthController {
 		if (authResponse.error) {
 			throw new UnauthorizedException(authResponse.error.message);
 		}
-		return { accessToken: authResponse.data.session?.access_token, userId: authResponse.data.user?.id };
+		return {
+			accessToken: authResponse.data.session?.access_token,
+			userId: authResponse.data.user?.id,
+		};
 	}
 
 	@Post('register')

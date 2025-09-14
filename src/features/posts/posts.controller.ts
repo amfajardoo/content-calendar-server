@@ -1,4 +1,3 @@
-import { SupabaseAuthGuard } from '@core/supabase/supabase-auth.guard';
 import {
 	Body,
 	Controller,
@@ -10,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { Post as PostModel } from '@prisma/client';
 import { PostStatus } from '@prisma/client/wasm';
+import { SupabaseAuthGuard } from 'src/core/supabase/supabase-auth.guard';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
