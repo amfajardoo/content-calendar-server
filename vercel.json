@@ -8,6 +8,10 @@
   ],
   "routes": [
     {
+      "src": "/",
+      "dest": "/api/v1"
+    },
+    {
       "src": "/(.*)",
       "dest": "dist/main.js"
     }
