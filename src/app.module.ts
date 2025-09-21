@@ -9,6 +9,8 @@ import { CategoriesModule } from './features/categories/categories.module';
 import { GoalsModule } from './features/goals/goals.module';
 import { TransactionsModule } from './features/transactions/transactions.module';
 import { UsersModule } from './features/users/users.module';
+import { APP_GUARD } from '@nestjs/core';
+import { SupabaseAuthGuard } from './core/supabase/supabase-auth.guard';
 
 @Module({
 	imports: [
@@ -22,6 +24,12 @@ import { UsersModule } from './features/users/users.module';
 		TransactionsModule,
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [
+		AppService,
+		{
+			provide: APP_GUARD,
+			useClass: SupabaseAuthGuard,
+		},
+	],
 })
 export class AppModule {}

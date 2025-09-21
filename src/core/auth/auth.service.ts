@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { AuthError, AuthTokenResponsePassword, SignInWithPasswordCredentials } from "@supabase/supabase-js";
+import { AuthTokenResponsePassword, SignInWithPasswordCredentials, AuthResponse, AuthError, User, Session } from "@supabase/supabase-js";
 import { SupabaseService } from "../supabase/supabase.service";
 
 export type CredentialsWithEmail = {
@@ -16,6 +16,17 @@ export type CredentialsWithEmail = {
   name: string;
 };
 
+export type RefreshResponse = {
+    data: {
+        user: User | null;
+        session: Session | null;
+    } | {
+        user: null;
+        session: null;
+    };
+    error: AuthError | null;
+};
+
 @Injectable()
 export class AuthService {
   constructor(private supabaseService: SupabaseService) {}
@@ -23,6 +34,14 @@ export class AuthService {
   async login(credentials: SignInWithPasswordCredentials): Promise<AuthTokenResponsePassword> {
     const authTokenResponse = await this.supabaseService.client.auth.signInWithPassword(credentials);
     return authTokenResponse;
+  }
+  
+  async refresh(refreshToken: string): Promise<RefreshResponse> {
+    const { data, error } = await this.supabaseService.client.auth.refreshSession({
+      refresh_token: refreshToken,
+    });
+    
+    return { data, error };
   }
 
   async register(credentials: CredentialsWithEmail) {
@@ -40,11 +59,9 @@ export class AuthService {
           },
         },
       });
-
       if (authResponse.error) {
         return { newUser: null, error: authResponse.error };
       }
-
       const newUser = authResponse.data.user;
       return { newUser, error: null };
     } catch (err) {
@@ -57,7 +74,6 @@ export class AuthService {
     await this.supabaseService.client.auth.resetPasswordForEmail(user.email, {
       redirectTo: "http://example.com/account/update-password",
     });
-    // await supabase.auth.updateUser({ password: 'new_password' })
   }
 
   async logout() {
