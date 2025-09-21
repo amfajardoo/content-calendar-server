@@ -1,18 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/core/prisma/prisma.service';
+import { SupabaseService } from 'src/core/supabase/supabase.service';
 
 @Injectable()
 export class UsersService {
-	constructor(private prisma: PrismaService) {}
+	constructor(private prisma: PrismaService, private supabaseService: SupabaseService) {}
 
-	async createUser(data: Prisma.UserCreateInput): Promise<User> {
-		return this.prisma.user.create({
-			data,
-		});
-	}
-
-	async users(params: {
+	async profiles(params: {
 		skip?: number;
 		take?: number;
 		cursor?: Prisma.UserWhereUniqueInput;
@@ -29,7 +24,7 @@ export class UsersService {
 		});
 	}
 
-	async user(
+	async profile(
 		userWhereUniqueInput: Prisma.UserWhereUniqueInput,
 	): Promise<User | null> {
 		return this.prisma.user.findUnique({
@@ -48,9 +43,32 @@ export class UsersService {
 		});
 	}
 
-	async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-		return this.prisma.user.delete({
-			where,
-		});
-	}
+  async deleteUser(
+    where: Prisma.UserWhereUniqueInput,
+  ): Promise<User | null> {
+    const profile = await this.prisma.user.findUnique({ where });
+    if (!profile) return null;
+
+    const { error: deleteError } =
+      await this.supabaseService.admin.auth.admin.deleteUser(
+        profile.id,
+      );
+
+    if (deleteError) {
+      throw new Error(`Cannot delete user from Supabase Auth: ${deleteError.message}`);
+    }
+
+    return this.prisma.user.delete({
+      where: { id: profile.id },
+    });
+  }
+
+  async getUserCurrency(userId: string): Promise<string> {
+    const profile = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { currency: true },
+    });
+
+    return profile?.currency ?? 'USD';
+  }
 }

@@ -4,20 +4,27 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class SupabaseService {
-	constructor(private configService: ConfigService) {}
+  private anonClient: SupabaseClient;
+  private adminClient: SupabaseClient;
 
-	get SupabaseClient(): SupabaseClient {
-		const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-		const serviceRoleKey = this.configService.get<string>(
-			'SUPABASE_SERVICE_ROLE_KEY',
-		);
+  constructor(private configService: ConfigService) {
+    const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
+    const anonKey = this.configService.get<string>('SUPABASE_ANON_KEY');
+    const serviceRoleKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY');
 
-		if (!supabaseUrl || !serviceRoleKey) {
-			throw new Error(
-				'Missing required environment variables: SUPABASE_URL or SERVICE_ROLE_KEY',
-			);
-		}
+    if (!supabaseUrl || !anonKey || !serviceRoleKey) {
+      throw new Error('Missing Supabase env vars');
+    }
 
-		return createClient(supabaseUrl, serviceRoleKey);
-	}
+    this.anonClient = createClient(supabaseUrl, anonKey);
+    this.adminClient = createClient(supabaseUrl, serviceRoleKey);
+  }
+
+  get client(): SupabaseClient {
+    return this.anonClient; // 👉 para signUp, signIn
+  }
+
+  get admin(): SupabaseClient {
+    return this.adminClient; // 👉 para auth.admin.*
+  }
 }

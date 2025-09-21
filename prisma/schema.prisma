@@ -9,32 +9,69 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name      String
+  currency  String   @default("USD")
+  createdAt DateTime @default(now())
+
+  // relaciones
+  transactions Transaction[]
+  categories   Category[]
+  goals        Goal[]
+
+  @@map("users")
+}
+
+model Transaction {
+  id        String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String          @db.Uuid
+  type      TransactionType
+  amount    Decimal         @db.Decimal(12, 2)
+  note      String?
+  date      DateTime        @default(now())
+  createdAt DateTime        @default(now())
+
+  // relaciones
+  user       User      @relation(fields: [userId], references: [id])
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?   @db.Uuid
+
+  @@map("transactions")
+}
+
+model Category {
+  id        String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String?         @db.Uuid
+  name      String
+  type      TransactionType
+  createdAt DateTime        @default(now())
+
+  // relaciones
+  user         User?         @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+  goals        Goal[]
+
+  @@unique([name, type], name: "name_type") // 👈 para evitar duplicados globales
+  @@map("categories")
+}
+
+model Goal {
+  id           String   @id @default(uuid())
+  title        String
+  targetAmount Float
+  startDate    DateTime
+  endDate      DateTime
+  userId       String   @db.Uuid
+  categoryId   String?  @db.Uuid
+
+  user     User      @relation(fields: [userId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  posts Post[]
 }
 
-model Post {
-  id            String     @id @default(uuid())
-  title         String
-  content       String?
-  scheduledDate DateTime?
-  status        PostStatus @default(DRAFT)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId String
-}
-
-enum PostStatus {
-  DRAFT
-  PENDING
-  SCHEDULED
-  PUBLISHED
-  ARCHIVED
+enum TransactionType {
+  income
+  expense
 }

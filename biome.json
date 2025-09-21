@@ -6,7 +6,8 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": false,
+    "includes": ["./src/*"]
   },
   "formatter": {
     "enabled": true,
@@ -18,6 +19,9 @@
       "recommended": true,
       "style": {
         "useImportType": "off"
+      },
+      "correctness": {
+        "noNodejsModules": "error"
       }
     }
   },
