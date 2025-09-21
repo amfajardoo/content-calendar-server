@@ -1,6 +1,6 @@
 import { Injectable, UseInterceptors } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { CurrencyFormatInterceptor } from "src/common/interceptors/currency-format/currency-format.interceptor";
+import { CurrencyFormatInterceptor } from "../../common/interceptors/currency-format/currency-format.interceptor";
 import { PrismaService } from "src/core/prisma/prisma.service";
 
 @Injectable()
