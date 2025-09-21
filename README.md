@@ -1,3 +1,6 @@
+# DEPLOYMENT STATUS
+https://deploy-badge.vercel.app/?url=https://content-calendar-server.vercel.app/api/v1/health&name=FLUXO
+
 # Personal Finance Management API
 
 A RESTful API for a personal finance management application, built with NestJS, Prisma, and Supabase. This application helps you manage your income, expenses, and financial goals.
