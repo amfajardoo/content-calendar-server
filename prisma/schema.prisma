@@ -19,6 +19,9 @@ model User {
   categories   Category[]
   goals        Goal[]
 
+  // Nota: Esta tabla es poblada automáticamente por un trigger de Supabase
+  // llamado 'auth_handle_new_user' cuando un nuevo usuario de auth.users es creado.
+
   @@map("users")
 }
 
