@@ -1,5 +1,5 @@
 # DEPLOYMENT STATUS
-![Static Badge](https://deploy-badge.vercel.app/?url=https://content-calendar-server.vercel.app/api/v1/health&name=FLUXO)
+![Build Status](https://deploy-badge.vercel.app/?url=https://content-calendar-server.vercel.app/api/v1/health&name=FLUXO)
 
 # Personal Finance Management API
 
