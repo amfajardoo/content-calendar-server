@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { map, Observable } from 'rxjs';
-import { getDecimalsForCurrency, toCurrency } from 'src/utils/currency.utils';
+import { getDecimalsForCurrency, toCurrency } from '../../../utils/currency.utils';
 
 @Injectable()
 export class CurrencyFormatInterceptor implements NestInterceptor {

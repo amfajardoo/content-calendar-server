@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { PrismaService } from "src/core/prisma/prisma.service";
-import { toCurrency } from "src/utils/currency.utils";
+import { PrismaService } from "../../core/prisma/prisma.service";
+import { toCurrency } from "../../utils/currency.utils";
 
 @Injectable()
 export class GoalsService {

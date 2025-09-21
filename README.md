@@ -80,7 +80,6 @@ The application will be available at `http://localhost:3000`.
 -   `npm run start`: Starts the application in production mode.
 -   `npm run build`: Compiles the application for production.
 -   `npm test`: Runs unit tests.
--   `npm run test:e2e`: Runs end-to-end tests.
 
 ## Project Structure and Endpoints
 

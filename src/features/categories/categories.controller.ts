@@ -8,7 +8,6 @@ import {
 	Query,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/core/prisma/prisma.service';
 import { CategoriesService } from './categories.service';
 
 @Controller('categories')
